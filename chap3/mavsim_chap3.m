@@ -5,15 +5,15 @@
 %         12/18/2018 - RWB
 %         1/15/2019 - RWB
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('../parameters/simulation_parameters')  % load SIM: simulation parameters
-run('../parameters/aerosonde_parameters')  % load MAV: aircraft parameters
+run('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\parameters\simulation_parameters')  % load SIM: simulation parameters
+run('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\parameters\aerosonde_parameters')  % load MAV: aircraft parameters
 
 % initialize the mav viewer
-addpath('../chap2'); mav_view = mav_viewer();  
-addpath('../chap2'); data_view = data_viewer();
+addpath('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\chap2'); mav_view = mav_viewer();  
+addpath('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\chap3'); data_view = data_viewer();
 
 % initialize the video writer
-VIDEO = 0;  % 1 means write video, 0 means don't write video
+VIDEO = 1;  % 1 means write video, 0 means don't write video
 if VIDEO==1, video=video_writer('chap3_video.avi', SIM.ts_video); end
 
 

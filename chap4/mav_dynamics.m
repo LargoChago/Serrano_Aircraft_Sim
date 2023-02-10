@@ -22,7 +22,7 @@ classdef mav_dynamics < handle
             self.ts_simulation = Ts; % time step between function calls
             self.state = [MAV.pn0; MAV.pe0; MAV.pd0; MAV.u0; MAV.v0; MAV.w0;...
                 MAV.e0; MAV.e1; MAV.e2; MAV.e3; MAV.p0; MAV.q0; MAV.r0];
-            self.Va =
+            self.Va = 
             self.alpha = 
             self.beta = 
             self.wind = 
@@ -63,9 +63,9 @@ classdef mav_dynamics < handle
         end
         %----------------------------
         function self=update_velocity_data(self, wind)
-            self.wind = 
-            self.Va = 
-            self.alpha = 
+            self.wind = ((ur^2)+(vr^2)+(wr^2))^1/2 ;
+            self.Va = arctan(wr/ur) ;
+            self.alpha = arcsin(vr/(((ur^2)+(vr^2)+(wr^2))^1/2)) ;
             self.beta = 
         end
         %----------------------------
