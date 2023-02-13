@@ -1,3 +1,4 @@
+clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % mavSimMatlab 
 %     - Chapter 3 assignment for Beard & McLain, PUP, 2012
@@ -5,12 +6,12 @@
 %         12/18/2018 - RWB
 %         1/15/2019 - RWB
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\parameters\simulation_parameters')  % load SIM: simulation parameters
-run('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\parameters\aerosonde_parameters')  % load MAV: aircraft parameters
+run('..\parameters\simulation_parameters')  % load SIM: simulation parameters
+run('..\parameters\aerosonde_parameters')  % load MAV: aircraft parameters
 
 % initialize the mav viewer
-addpath('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\chap2'); mav_view = mav_viewer();  
-addpath('C:\Users\santi\OneDrive\Documents\AircraftSim\Assignments\chap3'); data_view = data_viewer();
+addpath('..\chap2'); mav_view = mav_view();  
+addpath('..\chap3'); data_view = data_viewer();
 
 % initialize the video writer
 VIDEO = 1;  % 1 means write video, 0 means don't write video
@@ -36,7 +37,7 @@ while sim_time < SIM.end_time
     forces_moments = [fx; fy; fz; Mx; My; Mz];
 
     %-------physical system-------------
-    mav.update(forces_moments, MAV);
+    mav.update_state(forces_moments, MAV);
     
     %-------update viewer-------------
     mav_view.update(mav.true_state);  % plot body of MAV

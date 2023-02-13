@@ -58,6 +58,11 @@ classdef mav_view < handle
                 set(self.body_handle,'Vertices',Vertices','Faces',self.Faces);
                 drawnow
             end
+            set(self.body_handle.Parent, 'XLim',[pe-30,pe+30])
+
+                set(self.body_handle.Parent, 'YLim',[pn-30,pn+30])
+
+                set(self.body_handle.Parent, 'ZLim',[-pd-30,-pd+30])
         end 
         %---------------------------
         function pts=rotate(self, pts, phi, theta, psi)

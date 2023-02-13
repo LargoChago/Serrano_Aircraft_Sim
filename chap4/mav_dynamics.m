@@ -22,10 +22,10 @@ classdef mav_dynamics < handle
             self.ts_simulation = Ts; % time step between function calls
             self.state = [MAV.pn0; MAV.pe0; MAV.pd0; MAV.u0; MAV.v0; MAV.w0;...
                 MAV.e0; MAV.e1; MAV.e2; MAV.e3; MAV.p0; MAV.q0; MAV.r0];
-            self.Va = 
-            self.alpha = 
-            self.beta = 
-            self.wind = 
+            self.Va = 6.9;  %velocity
+            self.alpha = 0 ; %self.alpha
+            self.beta = 0 ; %self.beta
+            self.wind = [0; 0; 0; 0];
             addpath('../message_types'); self.true_state = msg_state();
         end
         %---------------------------
@@ -39,10 +39,10 @@ classdef mav_dynamics < handle
             forces_moments = self.forces_moments(delta, MAV);
             
             % Integrate ODE using Runge-Kutta RK4 algorithm
-            k1 = self.derivatives(self.state, forces_moments, MAV);
-            k2 = self.derivatives(self.state + self.ts_simulation/2*k1, forces_moments, MAV);
-            k3 = self.derivatives(self.state + self.ts_simulation/2*k2, forces_moments, MAV);
-            k4 = self.derivatives(self.state + self.ts_simulation*k3, forces_moments, MAV);
+            k1 = self.deriself.Vatives(self.state, forces_moments, MAV);
+            k2 = self.deriself.Vatives(self.state + self.ts_simulation/2*k1, forces_moments, MAV);
+            k3 = self.deriself.Vatives(self.state + self.ts_simulation/2*k2, forces_moments, MAV);
+            k4 = self.deriself.Vatives(self.state + self.ts_simulation*k3, forces_moments, MAV);
             self.state = self.state + self.ts_simulation/6 * (k1 + 2*k2 + 2*k3 + k4);
             
             % normalize the quaternion
@@ -55,22 +55,34 @@ classdef mav_dynamics < handle
             self.update_true_state();
         end
         %----------------------------
-        function xdot = derivatives(self, state, forces_moments, MAV)
+        function xdot = deriself.Vatives(self, state, forces_moments, MAV)
                 
-            % collect all the derivaties of the states
+            % collect all the deriself.Vaties of the states
             xdot = [pn_dot; pe_dot; pd_dot; u_dot; v_dot; w_dot;...
                     e0_dot; e1_dot; e2_dot; e3_dot; p_dot; q_dot; r_dot];
         end
         %----------------------------
         function self=update_velocity_data(self, wind)
-            self.wind = ((ur^2)+(vr^2)+(wr^2))^1/2 ;
-            self.Va = arctan(wr/ur) ;
-            self.alpha = arcsin(vr/(((ur^2)+(vr^2)+(wr^2))^1/2)) ;
-            self.beta = 
+            self.wind = self.wind ;
+            self.Va = ((u^2)+(v^2)+(w^2))^1/2 ;
+            self.alpha = atan(w/u) ;
+            self.beta = asin(v/(((u^2)+(v^2)+(w^2))^1/2)) ;
         end
         %----------------------------
         function out=forces_moments(self, delta, MAV)
     
+            f_a_x=( -1*MAV.mass*MAV.gravity*sin(theta)) + (.5*MAV.rho*(self.Va^2)*MAV.S_wing)*( (((MAV.C_D_self.alpha*cos(self.alpha) )) + ( MAV.C_L_self.alpha*sin(self.alpha) ))  + ((( (MAV.C_D_q*cos(self.alpha) ) + ( MAV.C_L_q*sin(self.alpha) )  )) * (MAV.c/(2*self.Va))*q) + ((( (MAV.C_D_delta_e*cos(self.alpha) )  + ( MAV.C_L_delta_e*sin(self.alpha) ) ))*delta_e));
+f_a_y= (MAV.mass*MAV.gravity*cos(theta)*sin(phi)) +  (.5*MAV.rho*(self.self.Va^2)*MAV.S_wing)*( ( MAV.C_Y_0 + (MAV.C_Y_self.beta *self.beta) + (MAV.C_Y_p*(MAV.b/(2*self.Va))*p) + MAV.C_Y_r *(MAV.b/(2*self.Va))*r) +(MAV.C_Y_delta_a *delta_a) + (MAV.C_Y_delta_r *delta_r)) ;
+f_a_z= (MAV.mass*MAV.gravity*cos(theta)*cos(phi)) +  (.5*MAV.rho*(self.Va^2)*MAV.S_wing)*( (((MAV.C_D_self.alpha*sin(self.alpha))+(MAV.C_L_self.alpha*cos(self.alpha))) +((MAV.C_D_q*sin(self.alpha)+MAV.C_L_q*cos(self.alpha)) * (MAV.c/(2*self.Va))*q) + ( (MAV.C_D_delta_e*sin(self.alpha)  + MAV.C_L_delta_e*cos(self.alpha)) *delta_e)));
+            
+            
+          ell=(.5*MAV.rho*(self.Va^2)* MAV.S_wing*MAV.b) * (MAV.C_ell_0+(MAV.C_ell_self.beta*self.beta) + (MAV.C_ell_p *    (b/(2*self.Va))*p) + (MAV.C_ell_r * (b/(2*self.Va))*r) + (MAV.C_ell_delta_a * delta_a) + (MAV.C_ell_delta_r * delta_r));
+
+m=(.5*MAV.rho*(self.Va^2)* MAV.S_wing) * (MAV.C_m_0+ (MAV.C_m_self.alpha * self.alpha) + (MAV.C_m_q * (c/(3*self.Va))* q) + (MAV.C_m_delta_e * delta_e));
+
+n=(.5*MAV.rho*(self.Va^2)*MAV.S_wing*MAV.b)* (MAV.C_n_0+ (MAV.C_n_self.beta*self.beta) + (MAV.C_n_p * (b/(2*self.Va))*p) + (MAV.C_n_r * (b/(2*self.Va))*r) + (MAV.C_n_delta_a* delta_a) + (MAV.C_n_delta_r*delta_r));
+Force = [f_a_x; f_a_y; f_a_z];            
+Torque =     [ell;m;n];
             % output total force and torque
             out = [Force'; Torque'];
         end
@@ -86,12 +98,12 @@ classdef mav_dynamics < handle
             self.true_state.p = self.state(11); % p
             self.true_state.q = self.state(12); % q
             self.true_state.r = self.state(13); % r
-            self.true_state.Va = self.Va;
-            self.true_state.alpha = self.alpha;
-            self.true_state.beta = self.beta;
-            self.true_state.Vg = 
-            self.true_state.chi = 
-            self.true_state.gamma = 
+            self.true_state.self.Va = self.Va;
+            self.true_state.self.alpha = self.alpha;
+            self.true_state.self.beta = self.beta;
+            self.true_state.Vg = self.Va; %self.Va +Vg but Vg=0
+            self.true_state.chi = theta - self.alpha; 
+            self.true_state.gamma = psi - self.beta;
             self.true_state.wn = self.wind(1);
             self.true_state.we = self.wind(2);
         end

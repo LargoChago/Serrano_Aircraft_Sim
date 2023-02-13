@@ -19,23 +19,23 @@ classdef wind_simulation < handle
     methods
         %------constructor-----------
         function self = wind_simulation(Ts)
-            self.steady_state = 
-            self.A = 
-            self.B = 
-            self.C = 
-            self.gust_state = 
-            self._gust = [0; 0; 0];
+            self.steady_state = [0; 0; 0; 0];
+            self.A = [0 0 ; 0 0];
+            self.B = [0 ;0];
+            self.C = [0 0];
+            self.gust_state = 0;
+            self.gust_ = [0; 0; 0];
             self.Ts = Ts;
         end
         %---------------------------
         function wind=update(self)
-            wind = [self.steady_state; self._gust];
+            wind = [self.steady_state; self.gust_];
         end
         %----------------------------
         function self = gust(self)
             w = randn;
-            self.gust_state = self.gust_state + self.Ts*(A*self.gust_state + B*w);
-            self._gust = self.C*self.gust_state;
+            self.gust_state = self.gust_state + self.Ts*(self.A*self.gust_state + self.B*w);
+            self.gust_ = self.C*self.gust_state;
         end
     end
 end
