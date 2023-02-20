@@ -1,4 +1,3 @@
-clc
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % mavSimMatlab 
 %     - Chapter 4 assignment for Beard & McLain, PUP, 2012
@@ -6,20 +5,24 @@ clc
 %         12/27/2018 - RWB
 %         1/18/2019 - RWB
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('..\parameters\simulation_parameters')  % load SIM: simulation parameters
-run('..\parameters\aerosonde_parameters')  % load MAV: aircraft parameters
+clear
+restoredefaultpath
+addpath('../chap2'); 
+addpath('../chap3'); 
+run('../parameters/simulation_parameters')  % load SIM: simulation parameters
+run('../parameters/aerosonde_parameters')  % load MAV: aircraft parameters
 
 % initialize the mav viewer
-addpath('..\chap2'); mav_view = mav_view();  
-addpath('..\chap3'); data_view = data_viewer();
+mav_view = mav_viewer();  
+data_view = data_viewer();
 
 % initialize the video writer
-VIDEO = 0;  % 1 means write video, 0 means don't write video
+VIDEO = 1;  % 1 means write video, 0 means don't write video
 if VIDEO==1, video=video_writer('chap4_video.avi', SIM.ts_video); end
 
 % initialize elements of the architecture
-addpath('..\chap4'); mav = mav_dynamics(SIM.ts_simulation, MAV);
-addpath('..\chap4'); wind = wind_simulation(SIM.ts_simulation);
+addpath('../chap4'); wind = wind_simulation(SIM.ts_simulation);
+mav = mav_dynamics(SIM.ts_simulation, MAV);
 
 % initialize the simulation time
 sim_time = SIM.start_time;
@@ -36,7 +39,7 @@ while sim_time < SIM.end_time
 
     %-------physical system-------------
     current_wind = wind.update();
-    update_state(delta, current_wind, MAV);
+    mav.update_state(delta, current_wind, MAV);
     
     %-------update viewer-------------
     mav_view.update(mav.true_state);  % plot body of MAV

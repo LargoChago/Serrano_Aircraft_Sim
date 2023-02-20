@@ -5,21 +5,24 @@ clc
 %     - Update history:  
 %         12/18/2018 - RWB
 %         1/15/2019 - RWB
+%         02/15/2023 - LRH
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-run('..\parameters\simulation_parameters')  % load SIM: simulation parameters
-run('..\parameters\aerosonde_parameters')  % load MAV: aircraft parameters
+addpath('../chap2');
+addpath('../chap3');
+run('../parameters/simulation_parameters')  % load SIM: simulation parameters
+run('../parameters/aerosonde_parameters')  % load MAV: aircraft parameters
 
 % initialize the mav viewer
-addpath('..\chap2'); mav_view = mav_view();  
-addpath('..\chap3'); data_view = data_viewer();
+mav_view = mav_viewer();  
+data_view = data_viewer();
 
 % initialize the video writer
-VIDEO = 1;  % 1 means write video, 0 means don't write video
-if VIDEO==1, video=video_writer('chap3_video.avi', SIM.ts_video); end
+VIDEO = 0;  % 1 means write video, 0 means don't write video
+if VIDEO==1, video=video_writer('../Videos/chap3_video.avi', SIM.ts_video); end
 
 
 % initialize elements of the architecture
-mav = mav_dynamics(SIM.ts_simulation, MAV);
+mav = mav_dynamics_3(SIM.ts_simulation, MAV);
 
 % initialize the simulation time
 sim_time = SIM.start_time;
@@ -28,12 +31,12 @@ sim_time = SIM.start_time;
 disp('Type CTRL-C to exit');
 while sim_time < SIM.end_time
     %-------vary forces and moments to check dynamics-------------
-    fx = 10;
-    fy = 0; % 10;
-    fz = 0; % 10;
-    Mx = 0; % 0.1;
-    My = 0; % 0.1;
-    Mz = 0; % 0.1;
+    fx = 40;
+    fy =  0;
+    fz =  0;
+    Mx =  0.2;
+    My =  0;
+    Mz =  0;
     forces_moments = [fx; fy; fz; Mx; My; Mz];
 
     %-------physical system-------------
