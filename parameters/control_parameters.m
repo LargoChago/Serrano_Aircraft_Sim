@@ -14,41 +14,41 @@ AP.sigma = 0;
 AP.Va0 = 0;
 
 %----------roll rate loop-------------
-AP.p_kp = 0;
+AP.p_kp = 0.4;
 AP.p_ki = 0;
 AP.p_kd = 0;
 
 %----------roll loop-------------
-AP.phi_kp = 0;
+AP.phi_kp = 2;
 AP.phi_ki = 0;
 AP.phi_kd = 0;
 
 %----------course loop-------------
-AP.chi_kp = 0;
+AP.chi_kp = 1;
 AP.chi_ki = 0;
 AP.chi_kd = 0;
 
 %----------sideslip loop-------------
-AP.beta_kp = 0;
-AP.beta_ki = 0;
+AP.beta_kp = 4;
+AP.beta_ki = 0.4;
 AP.beta_kd = 0;
 
 %----------pitch rate loop-------------
-AP.q_kp = -3.5;
+AP.q_kp = -3.5;%-3.5;
 AP.q_ki = .0001% -.1;
 AP.q_kd = 0;
 
 %----------flight path angle loop-------------
-AP.gamma_kp = 1;
+AP.gamma_kp = 2;
 AP.gamma_ki = 0;
-AP.gamma_kd = 0;
+AP.gamma_kd = 0.02;
 
 %----------altitude loop-------------
-AP.h_kp = 0;
+AP.h_kp = 0.03;
 AP.h_ki = 0;
 AP.h_kd = 0;
 
 %---------airspeed loop---------------
 AP.Va_kp = 1;
-AP.Va_ki = .02;
-AP.Va_kd = -0.02;
+AP.Va_ki = .01;
+AP.Va_kd = -0.01;

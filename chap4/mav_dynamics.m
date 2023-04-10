@@ -196,7 +196,7 @@ classdef mav_dynamics < handle
 %             self.forces.thrust = (MAV.rho*MAV.D_prop^4*MAV.C_T0/(4*pi^2))*Omega_p^2 + (MAV.rho*MAV.D_prop^3*MAV.C_T1*self.Va/(2*pi))*Omega_p + ...
 %                             (MAV.rho*MAV.D_prop^2 * MAV.C_T2 * self.Va^2);
             k_motor = 30;
-            self.forces.thrust = .5 * MAV.rho * MAV.C_prop* MAV.S_prop * ((k_motor*delta_t)^2 - self.Va^2)
+            self.forces.thrust = .5 * MAV.rho * MAV.C_prop* MAV.S_prop * ((k_motor*delta_t)^2 - self.Va^2);
  
             self.forces.x = self.forces.x_grav + self.forces.x_aero + self.forces.thrust;
             self.forces.y = self.forces.y_grav + self.forces.y_aero;

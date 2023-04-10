@@ -39,23 +39,34 @@ classdef mav_dynamics < handle
         %---------------------------
         function self=update_sensors(self, MAV, SENSOR)
             % Return value of sensors on MAV: gyros, accels, static_pressure, dynamic_pressure, GPS
-            self.sensors.gyro_x = 
-            self.sensors.gyro_y = 
-            self.sensors.gyro_z = 
-            self.sensors.accel_x = 
-            self.sensors.accel_y =                
-            self.sensors.accel_z = 
-            self.sensors.static_pressure = 
-            self.sensors.diff_pressure = 
+            self.sensors.gyro_x = p + normrnd(0,SENSOR.gyro_sigma^2);
+            self.sensors.gyro_y = q + normrnd(0,SENSOR.gyro_sigma^2);
+            self.sensors.gyro_z = r + normrnd(0,SENSOR.gyro_sigma^2);
+            self.sensors.accel_x = udot + q*w - r*v + MAV.gravity*sin(theta) + normrnd(0,SENSOR.accel_sigma^2);
+            self.sensors.accel_y = vdot + r*u - p*w - MAV.gravity*cos(theta)*sin(phi) + normrnd(0,SENSOR.accel_sigma^2);               
+            self.sensors.accel_z = wdot + p*v - q*u - MAV.gravity*cos(theta)*cos(phi) + normrnd(0,SENSOR.accel_sigma^2);
+         % qbar= (1/2)*MAV.rho*(Va^2);
+          % betadiff = .02;
+          %  101325 * (288.15 / (288.15 + (.0065* altitude)) )^((9.81*.0289)/(8.31*.0065));
+            self.sensors.static_pressure =  (101325 * (288.15 / (288.15 + (.0065* altitude)) )^((9.81432*.0289)/(8.31*.0065)))  + normrnd(0,SENSOR.static_pres_sigma^2);
+            self.sensors.diff_pressure =(1/2)*MAV.rho*(self.Va^2) + normrnd(0,SENSOR.diff_pres_sigma^2) ;   
+           
             if self.t_gps >= SENSOR.ts_gps
-                self.gps_eta_n = 
-                self.gps_eta_e = 
-                self.gps_eta_h = 
-                self.sensors.gps_n = 
-                self.sensors.gps_e = 
-                self.sensors.gps_h = 
-                self.sensors.gps_Vg = 
-                self.sensors.gps_course = 
+
+%error n-e: 6.6
+%error h: 9.2
+% exp(-(1/16000))*
+                self.gps_eta_n = .5;
+                self.gps_eta_e = .5;
+                self.gps_eta_h = .5;
+
+                self.sensors.gps_n =    Pn + normrnd(0,SENSOR.gps_n_sigma^2);
+                self.sensors.gps_e =    Pe + normrnd(0,SENSOR.gps_e_sigma^2);
+                self.sensors.gps_h =   -Pd + normrnd(0,SENSOR.gps_h_sigma^2);
+
+                self.sensors.gps_Vg = ((((self.Va*cos(phi) + wn)^2) + ((self.Va*sin(phi) + we)^2))^.5) + normrnd(0,SENSOR.gps_Vg_sigma^2);
+                self.sensors.gps_course = atan2(self.Va*sin(phi) + we, self.Va*cos(phi) + wn) + normrnd(0,SENSOR.gps_course_sigma^2);
+                
                 self.t_gps = 0;
             else
                 self.t_gps = self.t_gps + self.ts_simulation;
