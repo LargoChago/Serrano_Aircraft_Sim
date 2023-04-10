@@ -36,7 +36,7 @@ sim_time = SIM.start_time;
 disp('Type CTRL-C to exit');
 while sim_time < SIM.end_time
     %-------controller-------------
-    measurements = mav.sensors(MAV, SENSOR);
+    measurements = mav.sensors(MAV, SENSOR); % index error?
     estimated_state = mav.true_state;  % uses true states in the control
     commands.airspeed_command = Va_command.square(sim_time);
     commands.course_command = chi_command.square(sim_time);

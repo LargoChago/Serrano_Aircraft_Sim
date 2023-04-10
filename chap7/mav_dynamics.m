@@ -50,19 +50,20 @@ classdef mav_dynamics < handle
           %  101325 * (288.15 / (288.15 + (.0065* altitude)) )^((9.81*.0289)/(8.31*.0065));
             self.sensors.static_pressure =  (101325 * (288.15 / (288.15 + (.0065* altitude)) )^((9.81432*.0289)/(8.31*.0065)))  + normrnd(0,SENSOR.static_pres_sigma^2);
             self.sensors.diff_pressure =(1/2)*MAV.rho*(self.Va^2) + normrnd(0,SENSOR.diff_pres_sigma^2) ;   
-           
+
             if self.t_gps >= SENSOR.ts_gps
 
 %error n-e: 6.6
 %error h: 9.2
 % exp(-(1/16000))*
-                self.gps_eta_n = .5;
-                self.gps_eta_e = .5;
-                self.gps_eta_h = .5;
 
-                self.sensors.gps_n =    Pn + normrnd(0,SENSOR.gps_n_sigma^2);
-                self.sensors.gps_e =    Pe + normrnd(0,SENSOR.gps_e_sigma^2);
-                self.sensors.gps_h =   -Pd + normrnd(0,SENSOR.gps_h_sigma^2);
+                self.gps_eta_n =exp(-(1/16000))*v(t-1) + normrnd(0,SENSOR.gps_n_sigma^2); %is this the v[N] term?
+                self.gps_eta_e =exp(-(1/16000))*v(t-1) + normrnd(0,SENSOR.gps_e_sigma^2);
+                self.gps_eta_h =exp(-(1/16000))*v(t-1) + normrnd(0,SENSOR.gps_h_sigma^2);
+
+                self.sensors.gps_n =    Pn(t) + self.gps_eta_n;  
+                self.sensors.gps_e =    Pe(t) + self.gps_eta_e;
+                self.sensors.gps_h =   -Pd(t) + self.gps_eta_h;
 
                 self.sensors.gps_Vg = ((((self.Va*cos(phi) + wn)^2) + ((self.Va*sin(phi) + we)^2))^.5) + normrnd(0,SENSOR.gps_Vg_sigma^2);
                 self.sensors.gps_course = atan2(self.Va*sin(phi) + we, self.Va*cos(phi) + wn) + normrnd(0,SENSOR.gps_course_sigma^2);
