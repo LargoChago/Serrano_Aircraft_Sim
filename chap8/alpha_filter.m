@@ -19,7 +19,7 @@ classdef alpha_filter < handle
         end
         %------methods-----------
         function y = update(self, u)
-            self.y = 
+            self.y = self.alpha*self.y + (1-self.alpha)*u;
             y = self.y;
         end
     end

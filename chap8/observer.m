@@ -36,7 +36,7 @@ classdef observer < handle
             self.lpf_diff = alpha_filter(0.5);
             self.attitude_ekf = ekf_attitude();
             self.position_ekf = ekf_position();
-%             % load AP: control gains/parameters
+            % load AP: control gains/parameters
 %             run('../parameters/control_parameters') 
 
 % 
@@ -44,13 +44,13 @@ classdef observer < handle
         %------methods-----------
         function estimated_state = update(self, measurements, MAV)
             % estimates for p, q, r are low pass filter of gyro minus bias estimate
-            self.estimated_state.p = 
-            self.estimated_state.q =
-            self.estimated_state.r = 
+            self.estimated_state.p = self.lpf_gyro_x.update(measurements.gyro_x) ;
+            self.estimated_state.q = self.lpf_gyro_y.update(measurements.gyro_y) ;
+            self.estimated_state.r = self.lpf_gyro_z.update(measurements.gyro_z) ;
 
             % invert sensor model to get altitude and airspeed
-            self.estimated_state.h = 
-            self.estimated_state.Va = 
+            self.estimated_state.h = self.lpf_static.update(measurements.static_pressure)/(MAV.rho*MAV.gravity) ;
+            self.estimated_state.Va = ((2/MAV.rho)*self.lpf_diff.update(measurements.diff_pressure))^.5;
 
             % estimate phi and theta with simple ekf
             self.estimated_state = self.attitude_ekf.update(self.estimated_state, measurements);
