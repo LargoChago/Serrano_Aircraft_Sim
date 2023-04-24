@@ -29,11 +29,11 @@ classdef observer < handle
             self.lpf_gyro_x = alpha_filter(0.5);
             self.lpf_gyro_y = alpha_filter(0.5);
             self.lpf_gyro_z = alpha_filter(0.5);
-            self.lpf_accel_x = alpha_filter(0.5);
-            self.lpf_accel_y = alpha_filter(0.5);
-            self.lpf_accel_z = alpha_filter(0.5);
+            self.lpf_accel_x = alpha_filter(0.9);
+            self.lpf_accel_y = alpha_filter(0.9);
+            self.lpf_accel_z = alpha_filter(0.9);
             self.lpf_static = alpha_filter(0.5);
-            self.lpf_diff = alpha_filter(0.5);
+            self.lpf_diff = alpha_filter(0.9);
             self.attitude_ekf = ekf_attitude();
             self.position_ekf = ekf_position();
             % load AP: control gains/parameters
