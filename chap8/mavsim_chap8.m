@@ -6,6 +6,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 clear
 clc
+restoredefaultpath
 run('../parameters/simulation_parameters')  % load SIM: simulation parameters
 run('../parameters/aerosonde_parameters')  % load MAV: aircraft parameters
 run('../parameters/control_parameters')  % load CTRL: control parameters
@@ -27,6 +28,8 @@ addpath('../chap8'); obsv = observer(SIM.ts_simulation);
 
 addpath('../message_types'); commands = msg_autopilot();
 addpath('../tools');
+
+est_viewer = est_state_viewer();
 
 % compute longitudinal trim
 addpath('../chap5');
@@ -83,19 +86,20 @@ disp('Type CTRL-C to exit');
 while sim_time < SIM.end_time
     
     %-------autopilot commands-----
-    commands.airspeed_command = Va_command.square;
-    commands.chi_command = chi_command.square(sim_time);
+    commands.airspeed_command = Va_command;
+    commands.course_command = course_command.square(sim_time);
     commands.altitude_command = altitude_command.square(sim_time);
 
     %-------controller-------------
     mav.update_sensors(MAV, SENSOR); % get sensor measurement
     measurements = mav.sensors;
     estimated_state = obsv.update(measurements, MAV);
+    est_viewer.update(mav.true_state,estimated_state, estimated_state, SIM.ts_simulation)
     [delta, commanded_state] = ctrl.update(commands, estimated_state);
     
     %-------physical system-------------
     current_wind = wind.update();
-    mav.update(delta, current_wind, MAV);
+    mav.update_state(delta, current_wind, MAV,"");
     
     %-------update viewer-------------
     mav_view.update(mav.true_state);       % plot body of MAV

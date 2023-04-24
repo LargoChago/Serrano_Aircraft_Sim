@@ -21,13 +21,17 @@ classdef compute_long_trim < handle
             %compute longitudinal forces with an input vector
             % x = [alpha, delta_e, delta_t] and output the weighted root sum 
             % squared of fx, fz, and m
-            self.mav.set_longitudinal(self.Va, self.gamma, x(1));
-            delta = [x(2), x(3), 0, 0];
-            f_and_m = self.mav.forces_moments(delta, self.MAV);
-            f_out(1) = f_and_m(1);
-            f_out(2) = f_and_m(3);
-            f_out(3) = f_and_m(5);
-            norm_long_forces = norm(f_out);
+            alpha= x(1);
+            delta_e = x(2);
+            delta_t = x(3);
+
+            self.mav.set_longitudinal(self.Va, self.gamma, alpha);
+            f_and_m = self.mav.forces_moments([delta_e, delta_t, 0,0],self.MAV);
+            fx= f_and_m(1);
+            fz= f_and_m(3);
+            m= f_and_m(5);
+
+            norm_long_forces = norm([fx,fz,m]);
         end
     end
 end

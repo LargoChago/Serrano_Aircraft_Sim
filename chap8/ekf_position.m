@@ -33,7 +33,7 @@ classdef ekf_position < handle
            SENSOR.gps_course_sigma^2];
             self.N = 10  ; % number of prediction step per sample
             self.Ts = (SIM.ts_control / self.N);
-            self.xhat = [0,0,0,0,0,0,0]; %[MAV.pn0,MAV.pe0,MAV.Vg,chi,wn,we,MAV.psi0] ;
+            self.xhat = [0;0;20;0;0;0;0]; %[MAV.pn0,MAV.pe0,MAV.Vg,chi,wn,we,MAV.psi0] ;
             self.P = 0;
             self.gps_n_old = 9999;
             self.gps_e_old = 9999;

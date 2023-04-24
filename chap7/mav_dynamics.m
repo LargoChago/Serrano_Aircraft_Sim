@@ -41,7 +41,6 @@ classdef mav_dynamics < handle
             self.alpha = atan2(MAV.w0, MAV.u0);
             self.beta = asin(MAV.v0/self.Va);
             self.wind = [0 0 0 0 0 0]';
-              addpath('../message_types'); self.true_state = msg_state();
             self.sensors = msg_sensors();
             self.gps_eta_n = 0;
             self.gps_eta_e = 0;
@@ -332,7 +331,8 @@ rho = M*P/(R*T);
             self.true_state.gamma = asin(-pd_dot/self.true_state.Vg);
             self.true_state.wn = self.wind(1);
             self.true_state.we = self.wind(2);
-            function set_theta(self, theta)
+        end
+        function set_theta(self, theta)
             %Dont change the velocities just change the orientation and
             %keep the velocities constant.
             e = Euler2Quaternion(self.true_state.phi, theta, self.true_state.psi);
@@ -360,6 +360,6 @@ rho = M*P/(R*T);
         end
         function set_gamma(self, gamma)
         end
-        end
+        
     end
 end
